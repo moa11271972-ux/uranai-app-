@@ -1,1 +1,935 @@
-western_premium_app_story_complete.html 
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>占い師専用アプリ 上位版</title>
+<style>
+  :root{
+    --bg:#f7f3ea;
+    --bg2:#fffdf8;
+    --panel:rgba(255,255,255,.9);
+    --gold:#a67c2e;
+    --gold2:#d4b06a;
+    --text:#2f2417;
+    --sub:#6a5b46;
+    --line:rgba(166,124,46,.22);
+    --shadow:0 16px 40px rgba(70,45,10,.12);
+    --radius:24px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(255,230,170,.35), transparent 26%),
+      radial-gradient(circle at 90% 10%, rgba(255,215,140,.18), transparent 18%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    min-height:100vh;
+  }
+  .wrap{max-width:1360px;margin:0 auto;padding:18px}
+  .hero{
+    border:1px solid var(--line);
+    border-radius:32px;
+    background:linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,248,235,.94));
+    padding:26px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(circle at 88% 18%, rgba(212,176,106,.18), transparent 18%),
+      radial-gradient(circle at 15% 80%, rgba(166,124,46,.10), transparent 24%);
+    pointer-events:none;
+  }
+  h1{
+    margin:0 0 10px;
+    color:#7a5617;
+    font-size:clamp(28px,4vw,42px);
+    letter-spacing:.04em;
+  }
+  .hero p{
+    margin:0;
+    color:var(--sub);
+    line-height:1.9;
+  }
+  .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .badge{
+    padding:8px 14px;border-radius:999px;background:#fff;
+    border:1px solid var(--line);font-size:12px;font-weight:700;color:#7a5617;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:420px 1fr 340px;
+    gap:18px;
+    margin-top:18px;
+  }
+  @media (max-width:1200px){
+    .layout{grid-template-columns:1fr}
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px;
+    backdrop-filter:blur(8px);
+  }
+  .card h2{
+    margin:0 0 14px;
+    font-size:22px;
+    color:#7a5617;
+  }
+  .sectionTitle{
+    margin:14px 0 8px;
+    font-size:14px;
+    color:#7a5617;
+    font-weight:700;
+  }
+  .input,.textarea,.select{
+    width:100%;
+    border:1px solid #dcc89e;
+    background:#fffefb;
+    border-radius:16px;
+    padding:13px 14px;
+    font-size:15px;
+    color:var(--text);
+    outline:none;
+  }
+  .textarea{
+    resize:vertical;
+    min-height:90px;
+    line-height:1.8;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:640px){
+    .row{grid-template-columns:1fr}
+  }
+  .switchRow{display:flex;gap:10px;flex-wrap:wrap}
+  .switchBtn,.subBtn,.mainBtn{
+    border:none;
+    cursor:pointer;
+    border-radius:16px;
+    padding:14px 16px;
+    font-size:15px;
+    font-weight:700;
+  }
+  .switchBtn,.subBtn{
+    background:#fff;
+    color:#7a5617;
+    border:1px solid var(--line);
+  }
+  .switchBtn.active{
+    color:#fff;
+    background:linear-gradient(135deg,var(--gold),var(--gold2));
+    box-shadow:0 10px 20px rgba(166,124,46,.24);
+  }
+  .mainBtn{
+    width:100%;
+    color:#fff;
+    background:linear-gradient(135deg,var(--gold),var(--gold2));
+    box-shadow:0 10px 22px rgba(166,124,46,.25);
+    margin-top:12px;
+  }
+  .toolRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+  }
+  @media (max-width:640px){
+    .toolRow{grid-template-columns:1fr}
+  }
+  .checkGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:640px){
+    .checkGrid{grid-template-columns:1fr}
+  }
+  .checkItem{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:16px;
+    padding:12px;
+  }
+  .infoBox,.menuBox,.lockBox{
+    border-radius:18px;
+    padding:14px;
+    background:linear-gradient(135deg,#fff,#fff7e8);
+    border:1px solid var(--line);
+    line-height:1.8;
+    font-size:14px;
+    color:var(--sub);
+  }
+  .lockBox{
+    background:#fff8e8;
+    border:1px solid #e0c27c;
+    color:#7a5617;
+  }
+  .resultBox{
+    min-height:680px;
+    border-radius:22px;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,249,238,.98));
+    padding:22px;
+    line-height:2;
+  }
+  .resultBox h3{margin:0 0 12px;color:#7a5617;font-size:24px}
+  .metaGrid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:16px;
+  }
+  @media (max-width:780px){
+    .metaGrid{grid-template-columns:1fr}
+  }
+  .metaCard{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:16px;
+    padding:12px;
+    font-size:14px;
+  }
+  .pill{
+    display:inline-block;
+    margin:0 6px 6px 0;
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-size:12px;
+    color:#7a5617;
+    font-weight:700;
+  }
+  .hl{
+    background:linear-gradient(transparent 60%, rgba(212,176,106,.36) 60%);
+    font-weight:700;
+  }
+  .small{font-size:13px;color:var(--sub);line-height:1.8}
+  .miniCard{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:16px;
+    padding:14px;
+    margin-bottom:10px;
+  }
+  .historyList,.customerList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height:500px;
+    overflow:auto;
+  }
+  .listBtn{
+    width:100%;
+    text-align:left;
+    border:none;
+    cursor:pointer;
+    border-radius:16px;
+    background:#fff;
+    border:1px solid var(--line);
+    padding:12px;
+    color:var(--text);
+  }
+  .loading{
+    display:none;
+    margin-top:10px;
+    color:#7a5617;
+    font-weight:700;
+  }
+  .loading.show{display:block}
+  a{color:#8a5d10}
+  .divider{
+    height:1px;background:var(--line);margin:14px 0;
+  }
+  @media print{
+    body{background:#fff}
+    .hero,.leftCol,.rightCol,.loading,.toolRow,.switchRow,.mainBtn,.subBtn{display:none !important}
+    .layout{display:block}
+    .card{box-shadow:none;border:none;background:#fff;padding:0}
+    .resultBox{border:none;padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>占い師専用アプリ 上位版</h1>
+    <p>
+      占い師が実際の鑑定現場で使いやすいように、顧客管理・履歴・複合占術・物語調リーディングをまとめた実務版です。<br>
+      無料版は集客用、有料版は本格鑑定用として使えます。
+    </p>
+    <div class="badgeRow">
+      <span class="badge">顧客保存</span>
+      <span class="badge">鑑定履歴</span>
+      <span class="badge">易64卦</span>
+      <span class="badge">ルーン</span>
+      <span class="badge">タロット</span>
+      <span class="badge">印刷 / PDF</span>
+      <span class="badge">JSONバックアップ</span>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="card leftCol">
+      <h2>鑑定入力</h2>
+
+      <div class="sectionTitle">利用モード</div>
+      <div class="switchRow">
+        <button type="button" class="switchBtn active" id="freeBtn">無料版</button>
+        <button type="button" class="switchBtn" id="premiumBtn">有料版</button>
+      </div>
+      <div class="lockBox" id="modeGuide">
+        無料版は短めの集客用鑑定、有料版は複合占術による長文鑑定です。
+      </div>
+
+      <div class="sectionTitle">お客様情報</div>
+      <div class="row">
+        <input id="customerName" class="input" placeholder="お客様名">
+        <input id="birthDate" class="input" type="date">
+      </div>
+
+      <div class="row">
+        <input id="birthTime" class="input" type="time">
+        <input id="birthPlace" class="input" placeholder="出生地（例：大阪府）">
+      </div>
+
+      <div class="row">
+        <select id="gender" class="select">
+          <option value="">性別</option>
+          <option>女性</option>
+          <option>男性</option>
+          <option>その他</option>
+        </select>
+        <select id="topic" class="select">
+          <option value="">相談テーマ</option>
+          <option>恋愛</option>
+          <option>仕事</option>
+          <option>お金</option>
+          <option>人間関係</option>
+          <option>結婚</option>
+          <option>家庭</option>
+          <option>健康</option>
+          <option>総合運</option>
+        </select>
+      </div>
+
+      <div class="sectionTitle">相談内容</div>
+      <textarea id="question" class="textarea" placeholder="例：今後の恋愛運と、動くべき時期を知りたい。相手との距離感に迷っている。"></textarea>
+
+      <div class="sectionTitle">占術選択</div>
+      <div class="checkGrid">
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="四柱推命" checked>四柱推命</label>
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="九星気学" checked>九星気学</label>
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="西洋占星術" checked>西洋占星術</label>
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="易" checked>易</label>
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="ルーン" checked>ルーン</label>
+        <label class="checkItem"><input type="checkbox" class="fortuneCheck" value="タロット" checked>タロット</label>
+      </div>
+
+      <div class="sectionTitle">占い師メモ</div>
+      <textarea id="readerMemo" class="textarea" placeholder="お客様の雰囲気、次回提案、対面で感じたことなど"></textarea>
+
+      <div class="sectionTitle">SNS導線</div>
+      <input id="instaUrl" class="input" placeholder="Instagram URL">
+      <input id="lineUrl" class="input" placeholder="LINE URL" style="margin-top:10px">
+
+      <button class="mainBtn" onclick="generateReading()">鑑定結果を作成する</button>
+      <div class="loading" id="loading">鑑定を統合中です…命式・流れ・象意をまとめています。</div>
+
+      <div class="toolRow">
+        <button type="button" class="subBtn" onclick="saveCurrentCustomer()">顧客を保存</button>
+        <button type="button" class="subBtn" onclick="saveHistory()">履歴に保存</button>
+        <button type="button" class="subBtn" onclick="window.print()">印刷 / PDF保存</button>
+        <button type="button" class="subBtn" onclick="downloadBackup()">JSON保存</button>
+      </div>
+
+      <div class="sectionTitle">おすすめ提案</div>
+      <div class="menuBox" id="menuSuggestion">
+        まだ鑑定前です。鑑定後におすすめの有料メニュー案内を表示します。
+      </div>
+    </aside>
+
+    <main class="card">
+      <h2>鑑定結果</h2>
+      <div class="resultBox" id="result">
+        <h3>まだ鑑定結果はありません</h3>
+        <p>
+          左側に入力後、<span class="hl">「鑑定結果を作成する」</span>を押してください。<br>
+          有料版では、複数占術をまとめた物語調の長文鑑定を表示します。
+        </p>
+      </div>
+    </main>
+
+    <aside class="card rightCol">
+      <h2>顧客と履歴</h2>
+
+      <div class="sectionTitle">顧客検索</div>
+      <input id="customerSearch" class="input" placeholder="名前で検索" oninput="renderCustomers()">
+
+      <div class="sectionTitle">顧客一覧</div>
+      <div class="customerList" id="customerList"></div>
+
+      <div class="divider"></div>
+
+      <div class="sectionTitle">鑑定履歴</div>
+      <div class="historyList" id="historyList"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+let appMode = "free";
+
+const freeBtn = document.getElementById("freeBtn");
+const premiumBtn = document.getElementById("premiumBtn");
+const modeGuide = document.getElementById("modeGuide");
+
+freeBtn.addEventListener("click", ()=>setMode("free"));
+premiumBtn.addEventListener("click", ()=>setMode("premium"));
+
+function setMode(mode){
+  appMode = mode;
+  freeBtn.classList.toggle("active", mode==="free");
+  premiumBtn.classList.toggle("active", mode==="premium");
+  modeGuide.textContent = mode==="free"
+    ? "無料版は短めの集客用鑑定です。まず安心感のあるお試し鑑定として使えます。"
+    : "有料版は複合占術と深い物語調リーディングを行う本格鑑定です。";
+}
+
+function safeValue(id){
+  return document.getElementById(id).value.trim();
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, function(m){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m];
+  });
+}
+
+function selectedFortunes(){
+  return [...document.querySelectorAll(".fortuneCheck:checked")].map(el=>el.value);
+}
+
+function parseBirthData(dateStr){
+  if(!dateStr) return null;
+  const d = new Date(dateStr);
+  if(isNaN(d)) return null;
+  return {
+    year:d.getFullYear(),
+    month:d.getMonth()+1,
+    day:d.getDate()
+  };
+}
+
+function getWesternSign(month, day){
+  const signs = [
+    ["山羊座", 1, 19], ["水瓶座", 2, 18], ["魚座", 3, 20], ["牡羊座", 4, 19],
+    ["牡牛座", 5, 20], ["双子座", 6, 21], ["蟹座", 7, 22], ["獅子座", 8, 22],
+    ["乙女座", 9, 22], ["天秤座", 10, 23], ["蠍座", 11, 22], ["射手座", 12, 21], ["山羊座", 12, 31]
+  ];
+  for(let i=0;i<signs.length;i++){
+    const [name,m,d] = signs[i];
+    if(month===m && day<=d) return name;
+  }
+  return "山羊座";
+}
+
+function getKyusei(year){
+  if(!year) return "未算出";
+  let num = 11 - (year % 9);
+  if(num > 9) num -= 9;
+  if(num === 0) num = 9;
+  const names = {
+    1:"一白水星", 2:"二黒土星", 3:"三碧木星", 4:"四緑木星", 5:"五黄土星",
+    6:"六白金星", 7:"七赤金星", 8:"八白土星", 9:"九紫火星"
+  };
+  return names[num];
+}
+
+function getShichuElement(year){
+  const arr = ["木","木","火","火","土","土","金","金","水","水"];
+  return arr[year % 10];
+}
+
+function getShichuAnimal(year){
+  const arr = ["申","酉","戌","亥","子","丑","寅","卯","辰","巳","午","未"];
+  return arr[year % 12];
+}
+
+function getShichuProfile(element){
+  const map = {
+    "木":"成長力が高く、人を育てたり物事を伸ばす力があるタイプ",
+    "火":"情熱と直感に優れ、存在感で流れを動かすタイプ",
+    "土":"安定感と受容力があり、周囲を支える力が強いタイプ",
+    "金":"判断力と洗練があり、物事の本質を見抜きやすいタイプ",
+    "水":"感受性と柔軟性が高く、流れを読む力に優れるタイプ"
+  };
+  return map[element] || "静かに状況を見極めるタイプ";
+}
+
+const ichingList = [
+"乾為天","坤為地","水雷屯","山水蒙","水天需","天水訟","地水師","水地比",
+"風天小畜","天沢履","地天泰","天地否","天火同人","火天大有","地山謙","雷地豫",
+"沢雷随","山風蠱","地沢臨","風地観","火雷噬嗑","山火賁","山地剥","地雷復",
+"天雷无妄","山天大畜","山雷頤","沢風大過","坎為水","離為火","沢山咸","雷風恒",
+"天山遯","雷天大壮","火地晋","地火明夷","風火家人","火沢睽","水山蹇","雷水解",
+"山沢損","風雷益","沢天夬","天風姤","沢地萃","地風升","沢水困","水風井",
+"沢火革","火風鼎","震為雷","艮為山","風山漸","雷沢帰妹","雷火豊","火山旅",
+"巽為風","兌為沢","風水渙","水沢節","風沢中孚","雷山小過","水火既済","火水未済"
+];
+
+const runeList = [
+"フェオ","ウル","ソーン","アンスール","ライド","ケン","ギューフ","ウンジョ",
+"ハガル","ニイド","イス","ヤラ","エイワズ","ペオース","アルジズ","ソウェイル",
+"ティール","ベルカナ","エワズ","マンナズ","ラグズ","イング","ダエグ","オシラ"
+];
+
+const tarotList = [
+"愚者","魔術師","女教皇","女帝","皇帝","法王","恋人たち","戦車","力","隠者",
+"運命の輪","正義","吊るされた男","死神","節制","悪魔","塔","星","月","太陽","審判","世界"
+];
+
+function seededIndex(str, len, salt=""){
+  const s = (str || "seed") + salt;
+  let h = 0;
+  for(let i=0;i<s.length;i++){
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h) % len;
+}
+
+function getIChingSeeded(seed){
+  return ichingList[seededIndex(seed, ichingList.length, "iching")];
+}
+function getRuneSeeded(seed){
+  return runeList[seededIndex(seed, runeList.length, "rune")];
+}
+function getTarotSeeded(seed){
+  return tarotList[seededIndex(seed, tarotList.length, "tarot")];
+}
+
+function getTopicBase(topic){
+  const map = {
+    "恋愛":"相手との距離感や、ご自身の愛され方・愛し方の癖が大きな鍵になっています。",
+    "仕事":"役割の広がりと疲れやすさが同時に出やすく、選び方が今後を左右しやすい流れです。",
+    "お金":"豊かさはただ入ってくるものではなく、ご自身の価値をどう扱うかで変わりやすい時期です。",
+    "人間関係":"縁を広げるより、安心できる人間関係を選び直すことに意味がある流れです。",
+    "結婚":"形を急ぐより、今後も心が安定する相手かを丁寧に見極めることが大切です。",
+    "家庭":"言葉にできない我慢や気配りが積み重なりやすく、整え直しが必要な時です。",
+    "健康":"心身の回復力を高めることが、そのまま全体運の底上げにつながります。",
+    "総合運":"今は人生全体の流れを静かに組み替える時期で、内面の整理が外側の幸運に直結します。"
+  };
+  return map[topic] || "今は心の流れと現実の流れを丁寧に揃えることが大切です。";
+}
+
+function getActionAdvice(topic){
+  const map = {
+    "恋愛":"相手の反応を追いすぎず、ご自身が安心できる関係の条件を書き出すことです。",
+    "仕事":"今の仕事で評価されている点と、消耗している点を分けて整理することです。",
+    "お金":"収支だけでなく、ご自身の労力や価値に見合った受け取り方を意識することです。",
+    "人間関係":"疲れる相手と無理に合わせず、自然体で話せる相手を大切にすることです。",
+    "結婚":"条件面だけでなく、一緒にいる時の安堵感を基準にすることです。",
+    "家庭":"感情が高ぶった時ではなく、落ち着いた時に短く正直に伝えることです。",
+    "健康":"予定を詰め込みすぎず、休むことを先に予定へ入れることです。",
+    "総合運":"毎日少しでも気持ちが整う習慣を作ることです。"
+  };
+  return map[topic] || "無理なく続く一歩を選ぶことです。";
+}
+
+function getTimingAdvice(topic){
+  const map = {
+    "恋愛":"急いで答えを出すより、相手の態度とご自身の気持ちが一致するタイミングを待つ方が流れは良いです。",
+    "仕事":"すぐに大きく変えるより、水面下で準備を進めてから動く方が安定します。",
+    "お金":"短期の増減より、数か月単位で整える方が成果につながります。",
+    "人間関係":"違和感が続く縁は早めに距離を整え、必要な縁は時間をかけて育てる方が良いです。",
+    "結婚":"見極めの期間を持つことで後悔が減り、心から納得できる形につながりやすいです。",
+    "家庭":"静かな時間帯に話すほど誤解が減りやすいです。",
+    "健康":"不調が強く出る前に止まるほど回復が早いです。",
+    "総合運":"待つだけでも急ぐだけでもなく、整った時に小さく動くのが最適です。"
+  };
+  return map[topic] || "流れを見極めながら一歩ずつ進む時期です。";
+}
+
+function getDeepTheme(topic, question){
+  if(question.includes("復縁")) return "過去の縁を追うより、その関係が今の自分を幸せにするかを見直す必要があります。";
+  if(question.includes("転職")) return "今は環境そのものより、自分の力が自然に活きる場所を見つけることが優先です。";
+  if(question.includes("結婚")) return "形への焦りではなく、安心して未来を描ける相手かどうかが中心課題です。";
+  if(question.includes("お金")) return "不安から守りに入りすぎるより、受け取れる価値に意識を向けることが大切です。";
+  return getTopicBase(topic);
+}
+
+function getModeIntro(){
+  return appMode === "free"
+    ? "今回の簡易鑑定では、今のお悩みに対して流れの中心だけをやわらかく読み解いていきます。"
+    : "今回の本格鑑定では、複数の占術を重ねながら、今の状況・本質・流れ・時期を立体的に見ていきます。";
+}
+
+function buildFreeText(data){
+  return `
+    <p>${getModeIntro()}</p>
+    <p>
+      ${data.name}様の今回のご相談には、<span class="hl">${getDeepTheme(data.topic, data.question)}</span>
+      という象意がまず強く出ています。
+    </p>
+    <p>
+      とくに「${escapeHtml(data.question)}」というテーマに対しては、
+      今すぐ大きな結論を出すよりも、今の気持ちと現実条件を整えながら進む方が運気が安定しやすいでしょう。
+    </p>
+    <p>
+      ${data.shichuProfile}という性質が根底にあるため、
+      ご自身が無理をして合わせ続けると流れが濁りやすく、逆に本音を整えるほど運は静かに味方していきます。
+    </p>
+    <p>
+      開運の鍵は、${getActionAdvice(data.topic)}
+      また、${getTimingAdvice(data.topic)}
+    </p>
+  `;
+}
+
+function buildPremiumText(data){
+  return `
+    <p>${getModeIntro()}</p>
+
+    <p>
+      ${data.name}様の命式と今の運の流れを重ねると、今は単なる迷いの時期ではなく、
+      <span class="hl">人生の向きを一段深い場所で選び直している転換点</span>に入っています。
+      表面的には停滞や迷いに見えることも、実際には次の運を受け取るための準備です。
+    </p>
+
+    <p>
+      四柱推命の観点では、${data.element}の気を持つ方らしく、
+      ${data.shichuProfile}という本質が見えます。
+      干支の流れでは「${data.animal}」の性質も重なり、
+      表には出さなくても内面では強く考え続ける傾向があります。
+      そのため、${data.topic}の問題では、勢いだけで判断するより、
+      ご自身の内面が静かに納得できる答えを選んだ時に運が開きやすいです。
+    </p>
+
+    <p>
+      九星気学では「${data.kyusei}」の象意が出ており、
+      今は人との距離感、立場、動く順番が重要になります。
+      焦って前に出るよりも、今の場所で整えるべきことを整えるほど、
+      その後の展開がきれいにつながります。
+    </p>
+
+    <p>
+      西洋占星術では「${data.sign}」の資質が強く、
+      心の中で理想と現実の差を敏感に感じ取りやすい配置です。
+      だからこそ、感情が揺れている時ほど答えを急がず、
+      <span class="hl">自分の心が落ち着いた時に選んだ決断ほど長く正解になりやすい</span>のです。
+    </p>
+
+    ${data.useIChing ? `
+    <p>
+      易では「${data.iching}」が出ています。
+      これは今の流れが、力ずくで進むより調整しながら形を整える方が良いことを示しています。
+      いま必要なのは、勝ちにいくことよりも、最終的に崩れない道を選ぶことです。
+    </p>` : ""}
+
+    ${data.useRune ? `
+    <p>
+      ルーンでは「${data.rune}」が示され、
+      ご縁・直感・流れの切り替わりに関するメッセージが強く出ています。
+      過去への執着をほどき、本当に必要なものを選ぶほど道は澄んでいきます。
+    </p>` : ""}
+
+    ${data.useTarot ? `
+    <p>
+      タロットでは「${data.tarot}」が象徴として表れています。
+      これは、受け身で待つだけではなく、
+      ご自身の意思によって未来の向きを変えられる段階にあることを示しています。
+    </p>` : ""}
+
+    <p>
+      相談内容である「${escapeHtml(data.question)}」について、総合的に見ると、
+      ${getDeepTheme(data.topic, data.question)}
+      今回の悩みは、ただ苦しいだけのものではなく、
+      これから先の幸運の受け取り方を変えるための重要な分岐点です。
+    </p>
+
+    <p>
+      具体的な開運行動としては、${getActionAdvice(data.topic)}
+      これを意識するだけでも流れの質が大きく変わってきます。
+    </p>
+
+    <p>
+      時期の読みとしては、${getTimingAdvice(data.topic)}
+      動く時と待つ時のメリハリをつけることで、望む結果へ近づきやすくなります。
+    </p>
+
+    <p>
+      最後に、この鑑定から強く伝わるのは、
+      <span class="hl">${data.name}様は、無理に誰かや何かへ合わせるより、
+      本来の感覚を信じた時にこそ運が動き出す</span>ということです。
+      目の前の迷いに振り回されるのではなく、
+      心が静かに納得する方向へ進んだ時、未来は今より確実に開けていきます。
+    </p>
+
+    ${data.memo ? `
+    <div class="menuBox">
+      <strong style="color:#7a5617;">占い師メモ</strong>
+      <div class="small">${escapeHtml(data.memo).replace(/\n/g,"<br>")}</div>
+    </div>` : ""}
+  `;
+}
+
+function generateReading(){
+  const name = safeValue("customerName") || "お客様";
+  const birthDate = safeValue("birthDate");
+  const birthTime = safeValue("birthTime");
+  const birthPlace = safeValue("birthPlace") || "未入力";
+  const gender = safeValue("gender") || "未入力";
+  const topic = safeValue("topic") || "総合運";
+  const question = safeValue("question");
+  const memo = safeValue("readerMemo");
+  const instaUrl = safeValue("instaUrl");
+  const lineUrl = safeValue("lineUrl");
+  const fortunes = selectedFortunes();
+  const loading = document.getElementById("loading");
+
+  if(!question){
+    alert("相談内容を入力してください。");
+    return;
+  }
+
+  loading.classList.add("show");
+
+  setTimeout(()=>{
+    const birth = parseBirthData(birthDate) || {year:1990, month:1, day:1};
+    const sign = getWesternSign(birth.month, birth.day);
+    const kyusei = getKyusei(birth.year);
+    const element = getShichuElement(birth.year);
+    const animal = getShichuAnimal(birth.year);
+    const shichuProfile = getShichuProfile(element);
+    const seed = `${name}|${birthDate}|${birthTime}|${birthPlace}|${topic}|${question}`;
+    const iching = getIChingSeeded(seed);
+    const rune = getRuneSeeded(seed);
+    const tarot = getTarotSeeded(seed);
+
+    const data = {
+      name, birthDate, birthTime, birthPlace, gender, topic, question, memo,
+      sign, kyusei, element, animal, shichuProfile, iching, rune, tarot,
+      useIChing:fortunes.includes("易"),
+      useRune:fortunes.includes("ルーン"),
+      useTarot:fortunes.includes("タロット")
+    };
+
+    const badges = fortunes.map(f=>`<span class="pill">${f}</span>`).join("");
+    const result = document.getElementById("result");
+
+    result.innerHTML = `
+      <h3>${appMode==="free" ? "無料版 簡易鑑定" : "有料版 本格複合鑑定"}</h3>
+
+      <div class="metaGrid">
+        <div class="metaCard"><strong>お客様名：</strong>${escapeHtml(name)}</div>
+        <div class="metaCard"><strong>相談テーマ：</strong>${escapeHtml(topic)}</div>
+        <div class="metaCard"><strong>生年月日：</strong>${escapeHtml(birthDate || "未入力")} ${escapeHtml(birthTime || "")}</div>
+        <div class="metaCard"><strong>出生地 / 性別：</strong>${escapeHtml(birthPlace)} / ${escapeHtml(gender)}</div>
+      </div>
+
+      <div style="margin-bottom:12px">${badges}</div>
+
+      <div class="miniCard">
+        <strong style="color:#7a5617">占術サマリー</strong>
+        <div class="small">
+          四柱推命風：${escapeHtml(element)}の気 / ${escapeHtml(animal)}年生まれ / ${escapeHtml(shichuProfile)}<br>
+          九星気学風：${escapeHtml(kyusei)}<br>
+          西洋占星術：${escapeHtml(sign)}<br>
+          ${fortunes.includes("易") ? `易：${escapeHtml(iching)}<br>` : ""}
+          ${fortunes.includes("ルーン") ? `ルーン：${escapeHtml(rune)}<br>` : ""}
+          ${fortunes.includes("タロット") ? `タロット：${escapeHtml(tarot)}` : ""}
+        </div>
+      </div>
+
+      <div class="miniCard">
+        <strong style="color:#7a5617">相談内容</strong>
+        <div class="small">${escapeHtml(question).replace(/\n/g,"<br>")}</div>
+      </div>
+
+      ${appMode==="free" ? buildFreeText(data) : buildPremiumText(data)}
+
+      <div class="menuBox">
+        <strong style="color:#7a5617">次のご案内</strong>
+        <div class="small">
+          さらに深く見るなら、相性鑑定・時期読み・月運鑑定・年間鑑定の追加がおすすめです。
+          ${instaUrl ? `<br><a href="${escapeHtml(instaUrl)}" target="_blank">Instagramはこちら</a>` : ""}
+          ${lineUrl ? `<br><a href="${escapeHtml(lineUrl)}" target="_blank">LINEはこちら</a>` : ""}
+        </div>
+      </div>
+    `;
+
+    updateMenuSuggestion(topic);
+    loading.classList.remove("show");
+  }, 700);
+}
+
+function currentCustomerData(){
+  return {
+    id: safeValue("customerName") + "|" + safeValue("birthDate"),
+    name: safeValue("customerName"),
+    birthDate: safeValue("birthDate"),
+    birthTime: safeValue("birthTime"),
+    birthPlace: safeValue("birthPlace"),
+    gender: safeValue("gender"),
+    topic: safeValue("topic"),
+    question: safeValue("question"),
+    readerMemo: safeValue("readerMemo"),
+    instaUrl: safeValue("instaUrl"),
+    lineUrl: safeValue("lineUrl"),
+    savedAt: new Date().toLocaleString("ja-JP")
+  };
+}
+
+function saveCurrentCustomer(){
+  const customer = currentCustomerData();
+  if(!customer.name){
+    alert("お客様名を入力してください。");
+    return;
+  }
+  let arr = JSON.parse(localStorage.getItem("fortuneCustomers") || "[]");
+  const idx = arr.findIndex(x => x.id === customer.id);
+  if(idx >= 0) arr[idx] = customer;
+  else arr.unshift(customer);
+  localStorage.setItem("fortuneCustomers", JSON.stringify(arr.slice(0,100)));
+  renderCustomers();
+  alert("顧客情報を保存しました。");
+}
+
+function fillCustomer(customer){
+  document.getElementById("customerName").value = customer.name || "";
+  document.getElementById("birthDate").value = customer.birthDate || "";
+  document.getElementById("birthTime").value = customer.birthTime || "";
+  document.getElementById("birthPlace").value = customer.birthPlace || "";
+  document.getElementById("gender").value = customer.gender || "";
+  document.getElementById("topic").value = customer.topic || "";
+  document.getElementById("question").value = customer.question || "";
+  document.getElementById("readerMemo").value = customer.readerMemo || "";
+  document.getElementById("instaUrl").value = customer.instaUrl || "";
+  document.getElementById("lineUrl").value = customer.lineUrl || "";
+}
+
+function renderCustomers(){
+  const q = safeValue("customerSearch").toLowerCase();
+  let arr = JSON.parse(localStorage.getItem("fortuneCustomers") || "[]");
+  if(q){
+    arr = arr.filter(x => (x.name || "").toLowerCase().includes(q));
+  }
+  const box = document.getElementById("customerList");
+  if(arr.length === 0){
+    box.innerHTML = `<div class="miniCard"><div class="small">顧客データはまだありません。</div></div>`;
+    return;
+  }
+  box.innerHTML = arr.map((c, i) => `
+    <button type="button" class="listBtn" onclick="loadCustomer(${i}, ${q ? 'true' : 'false'})">
+      <strong style="color:#7a5617">${escapeHtml(c.name || "名称未設定")}</strong><br>
+      <span class="small">${escapeHtml(c.birthDate || "生年月日未入力")} / ${escapeHtml(c.topic || "テーマ未設定")}</span><br>
+      <span class="small">${escapeHtml(c.savedAt || "")}</span>
+    </button>
+  `).join("");
+  window._filteredCustomers = arr;
+}
+
+function loadCustomer(index){
+  const arr = window._filteredCustomers || JSON.parse(localStorage.getItem("fortuneCustomers") || "[]");
+  const customer = arr[index];
+  if(customer) fillCustomer(customer);
+}
+
+function saveHistory(){
+  const resultText = document.getElementById("result").innerText.trim();
+  if(!resultText || resultText.includes("まだ鑑定結果はありません")){
+    alert("先に鑑定結果を作成してください。");
+    return;
+  }
+  const historyItem = {
+    date:new Date().toLocaleString("ja-JP"),
+    mode:appMode,
+    name:safeValue("customerName") || "お客様",
+    topic:safeValue("topic") || "総合運",
+    question:safeValue("question"),
+    result:resultText.slice(0, 260) + "..."
+  };
+  let arr = JSON.parse(localStorage.getItem("fortuneHistory") || "[]");
+  arr.unshift(historyItem);
+  localStorage.setItem("fortuneHistory", JSON.stringify(arr.slice(0,100)));
+  renderHistory();
+  alert("鑑定履歴を保存しました。");
+}
+
+function renderHistory(){
+  const arr = JSON.parse(localStorage.getItem("fortuneHistory") || "[]");
+  const box = document.getElementById("historyList");
+  if(arr.length === 0){
+    box.innerHTML = `<div class="miniCard"><div class="small">履歴はまだありません。</div></div>`;
+    return;
+  }
+  box.innerHTML = arr.map(h => `
+    <div class="miniCard">
+      <strong style="color:#7a5617">${escapeHtml(h.name)} / ${escapeHtml(h.topic)}</strong>
+      <div class="small">${escapeHtml(h.date)} / ${h.mode==="free" ? "無料版" : "有料版"}</div>
+      <div class="small" style="margin-top:6px">相談：${escapeHtml(h.question)}</div>
+      <div class="small" style="margin-top:6px">${escapeHtml(h.result)}</div>
+    </div>
+  `).join("");
+}
+
+function updateMenuSuggestion(topic){
+  const box = document.getElementById("menuSuggestion");
+  if(appMode === "free"){
+    box.innerHTML = `
+      無料版の次の導線としては、<strong>「続きは本格鑑定へ」</strong>が最もおすすめです。<br>
+      追加提案例：相性鑑定 / 月運 / 年間運 / 詳細時期読み
+    `;
+    return;
+  }
+  const map = {
+    "恋愛":"おすすめ：相性鑑定 / 復縁鑑定 / 結婚時期鑑定",
+    "仕事":"おすすめ：転職時期鑑定 / 適職鑑定 / 3か月仕事運",
+    "お金":"おすすめ：金運上昇期鑑定 / 仕事運連動鑑定 / 年間金運",
+    "人間関係":"おすすめ：相性鑑定 / ご縁整理鑑定",
+    "結婚":"おすすめ：結婚時期鑑定 / 相性深掘り鑑定",
+    "家庭":"おすすめ：家庭運 / 家族相性 / 家庭内改善鑑定",
+    "健康":"おすすめ：生活リズム運気読み / 回復期の流れ",
+    "総合運":"おすすめ：今後3か月運勢 / 年間総合鑑定"
+  };
+  box.textContent = map[topic] || "おすすめ：詳細鑑定 / 月運 / 年間運";
+}
+
+function downloadBackup(){
+  const data = {
+    customers: JSON.parse(localStorage.getItem("fortuneCustomers") || "[]"),
+    history: JSON.parse(localStorage.getItem("fortuneHistory") || "[]"),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "fortune-app-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+renderCustomers();
+renderHistory();
+</script>
+</body>
+</html>
